@@ -54,7 +54,7 @@ dfSummary(assign0)
 
 Your explanation of which recommendations dictate how the sum score is computed, and why:
 
-TYPE YOUR ANSWER HERE
+TYPE YOUR ANSWER HERE FOR TESTING
 
 # Question 3: AI Prompt for Sum Score
 
