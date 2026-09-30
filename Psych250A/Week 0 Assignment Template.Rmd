@@ -1,0 +1,143 @@
+---
+title: "Psych 250a — Week 0 Assignment. Introduction to R"
+author: "Seongmin Park"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    latex_engine: xelatex
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+    theme: cosmo
+    highlight: haddock
+header-includes:
+  - \usepackage{fvextra}
+  - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere,commandchars=\\\{\}}
+  - \fvset{breaklines=true, breakanywhere=true}
+  - \RecustomVerbatimEnvironment{verbatim}{Verbatim}{breaklines,breakanywhere}
+editor_options:
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  error = TRUE,
+  comment = "",
+  fig.width = 8,
+  fig.height = 5)
+
+options(scipen = 999, width = 80)
+```
+
+# Question 1: Import and Summarize the Data
+
+```{r}
+
+library(summarytools)
+
+filepath <- "https://raw.githubusercontent.com/craigenders/psych250a/main/data/assignment0.csv"
+assign0 <- read.csv(filepath, stringsAsFactors = T)
+
+dfSummary(assign0)
+
+```
+
+# Question 2: Decisions About the Depression Sum Score
+
+Your explanation of which recommendations dictate how the sum score is computed, and why:
+
+TYPE YOUR ANSWER HERE
+
+# Question 3: AI Prompt for Sum Score
+
+
+AI's code:
+
+```{r}
+# PASTE AI'S CODE HERE
+```
+
+# Question 4: Audit the Sum Score Code
+
+
+a. Which part of the code selects `Depress1` to `Depress7`?
+
+TYPE YOUR ANSWER HERE
+
+b. Which part sums the seven variables separately for each participant?
+
+TYPE YOUR ANSWER HERE
+
+c. Which part produces a missing sum score (`NA`) if any of the seven items
+is missing?
+
+TYPE YOUR ANSWER HERE
+
+d. Which part adds the sum score named `Depression` to the data frame?
+
+TYPE YOUR ANSWER HERE
+
+# Question 5: AI Prompt for Verification Checks
+
+
+AI's code:
+
+```{r}
+# PASTE AI'S CODE HERE
+```
+
+# Question 6: Explain the Verification Code
+
+
+Codebook paragraph for Check 1:
+
+TYPE YOUR ANSWER HERE
+
+Codebook paragraph for Check 2:
+
+TYPE YOUR ANSWER HERE
+
+# Question 7: Recode Depression into a Binary Variable
+
+
+Your code:
+
+```{r}
+# TYPE YOUR CODE HERE
+```
+
+# Question 8: Convert Binary Variables to Factors
+
+
+Your code:
+
+```{r}
+# TYPE YOUR CODE HERE
+```
+
+# Question 9: AI Review of Recoding and Factor Code
+
+
+AI's verification code:
+
+```{r}
+# PASTE AI'S CODE HERE
+```
+
+Your statement about what the verification shows:
+
+TYPE YOUR ANSWER HERE
+
+# Question 10: Chat Log
+
+`````
+PASTE YOUR CHAT LOG HERE
+`````
