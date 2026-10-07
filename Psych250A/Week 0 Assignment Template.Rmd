@@ -57,9 +57,9 @@ dfSummary(assign0)
 Your explanation of which recommendations dictate how the sum score is
 computed, and why:
 
-According to the message I got, "3. Decide Between Sum Scores and Mean
-Scores' and "4. Handle Missing Data" sections told me how to compute the
-sum score. We didn't learn the concept of reliability yet (so do psych
+According to the message I got, '3. Decide Between Sum Scores and Mean
+Scores' and '4. Handle Missing Data' sections told me how to compute the
+sum score. We didn't learn a concept of reliability yet (so did psych
 package, which is mentioned in "1. verify that the items measure the
 same construct) and items related to depression do not need to be
 reverse-coded (which is mentioned in "2. Reverse-coded negatively worded
@@ -138,11 +138,11 @@ At first, The code
 provides information about 'If there is a missing value in specific
 variables (items), then the output will be 'TRUE', which is 1. On the
 other hand, if there is no missing value, the output will be 'FALSE',
-which is 0. Then, the code `rowSums() > 0` compute the number of missing
-values of each row and tests whether the values are larger then 0. If
-there is an individual who didn't respond to 4 items (i.e., 4 'TRUE's),
-then the result value would be 4, which is larger than 0. Thus, the
-result of the code is 'TRUE'. Secondly, the code
+which is 0. Then, the code `rowSums() > 0` computes the number of
+missing values in each row and tests whether the value is larger then 0.
+For example, if there is an individual who didn't respond to 4 items
+(i.e., 4 'TRUE's), then the result value would be 4, which is larger
+than 0. And thus, the result of the code is 'TRUE'. Secondly, the code
 `is.na(assign0$Depression)` provides information about 'If there is a
 missing value in 'Depression', which is a summed score that we just made
 before, then the output will be 'TRUE', which is 1. If there is no
@@ -151,14 +151,14 @@ could check the `!` symbol, which reverses the role of the function.
 Thus, `!is.na()` provides information about 'If there is **NOT** a
 missing value in 'Depression', then the output will be 'TRUE'. Finally,
 the logical symbol `&` conduct a logical test between the two values we
-got. R coerces nonzero values to 'TRUE' and zero to 'FALSE'. Ideally, a
-pair of two values must be different (e.g., TRUE and FALSE or FALSE and
-TRUE), which should represent all the values as 'FALSE', and the `sum()`
-of these values should be **ZERO**. Otherwise, if there is at least one
-missing in each variable (which is TRUE) but if the 'Depression' still
-has a value (which is also TRUE), the result will be 'TRUE', and the
-result will exhibit the value larger than ZERO, indicating the sum score
-was computed incorrectly.
+got. R coerces nonzero values to 'TRUE' and zero to 'FALSE'. Ideally,
+the pair of two values must be different (e.g., TRUE and FALSE or FALSE
+and TRUE), which should represent all the result values as 'FALSE', and
+the `sum()` of these values should be **ZERO**. Otherwise, if there is
+at least one missing in each variable (which is TRUE) but if the
+'Depression' still has a value (which is also TRUE), the result will be
+'TRUE', and the result will exhibit the value larger than ZERO,
+indicating the sum score was computed incorrectly.
 
 Codebook paragraph for Check 2:
 
@@ -621,17 +621,17 @@ Yes.
 This correctly maps:
 
 ClinicalDep
-Original	Factor Label
-0	Subclinical
-1	Clinical
+Original    Factor Label
+0   Subclinical
+1   Clinical
 Female
-Original	Factor Label
-0	Male
-1	Female
+Original    Factor Label
+0   Male
+1   Female
 Treatment
-Original	Factor Label
-0	Control
-1	Treatment
+Original    Factor Label
+0   Control
+1   Treatment
 Also, existing NAs will remain NA.
 
 Verification 1: Check whether the cutoff was applied correctly

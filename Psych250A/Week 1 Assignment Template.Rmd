@@ -1,0 +1,145 @@
+---
+title: "Psych 250a — Week 1 Assignment. Describing Data"
+author: "Seongmin Park"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    latex_engine: xelatex
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+    theme: cosmo
+    highlight: haddock
+header-includes:
+  - \usepackage{fvextra}
+  - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere,commandchars=\\\{\}}
+  - \fvset{breaklines=true, breakanywhere=true}
+  - \RecustomVerbatimEnvironment{verbatim}{Verbatim}{breaklines,breakanywhere}
+editor_options:
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  error = TRUE,
+  comment = "",
+  fig.width = 8,
+  fig.height = 5)
+
+options(scipen = 999, width = 80)
+```
+
+# Question 1: Import and Summarize the Data
+
+```{r}
+library(ggplot2)
+library(psych)
+library(summarytools)
+
+filepath <- "https://raw.githubusercontent.com/craigenders/psych250a/main/data/assignment1.csv"
+assign1 <- read.csv(filepath, stringsAsFactors = T)
+
+dfSummary(assign1)
+```
+
+# Question 2: Convert ELS and Female to Factors
+
+Your code:
+
+```{r}
+# TYPE YOUR CODE HERE
+```
+
+# Question 3: Inflammation Sum Score
+
+Your code:
+
+```{r}
+# TYPE YOUR CODE HERE
+```
+
+# Question 4: Histograms with Density Curves
+
+Your code:
+
+```{r}
+# TYPE YOUR CODE HERE
+```
+
+# Question 5: TNF Distribution Shape
+
+TYPE YOUR ANSWER HERE
+
+# Question 6: Inflammation Distribution Shape
+
+TYPE YOUR ANSWER HERE
+
+# Question 7: Descriptive Statistics
+
+Your code:
+
+```{r}
+# TYPE YOUR CODE HERE
+```
+
+Skewness and excess kurtosis for `TNF` and `Inflammation`:
+
+TYPE YOUR ANSWER HERE
+
+# Question 8: TNF Skewness and Kurtosis
+
+TYPE YOUR ANSWER HERE
+
+# Question 9: Inflammation Skewness and Kurtosis
+
+TYPE YOUR ANSWER HERE
+
+# Question 10: AI Prompt for Q–Q Plots
+
+AI's code:
+
+```{r}
+# PASTE AI'S CODE HERE
+```
+
+# Question 11: Interpret the Q–Q Plot
+
+TYPE YOUR ANSWER HERE
+
+# Question 12: Side-by-Side Histograms by ELS
+
+Your code:
+
+```{r}
+# TYPE YOUR CODE HERE
+```
+
+# Question 13: AI Suggestions to Improve the Graph
+
+Which suggestion you selected and why it should improve the display:
+
+TYPE YOUR ANSWER HERE
+
+The modified code:
+
+```{r}
+# PASTE AI'S CODE HERE
+```
+
+# Question 14: Conclusion About ELS and Inflammation
+
+TYPE YOUR ANSWER HERE
+
+# Question 15: Chat Log
+
+```         
+PASTE YOUR CHAT LOG HERE
+```
