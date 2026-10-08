@@ -97,7 +97,7 @@ ggplot(assign1, aes(x = Inflammation)) +
 
 # Question 5: TNF Distribution Shape
 
-Based on the histogram and density curve, it seems that the distribution shape is close to a symmetric, bell-shaped distribution, of which skewness and kurtosis values near zero. Because the majority of data are placed in the middle of the distribution, and high and low extreme scores would be cancel out, which is then symmetrically dispersed to both sides. 
+Based on the histogram and density curve, it seems that the distribution shape is close to a symmetric, bell-shaped distribution, of which skewness and kurtosis values near zero. Because the majority of data are placed in the middle of the distribution, and high and low extreme scores would be cancel out, which is then symmetrically dispersed to both sides.
 
 # Question 6: Inflammation Distribution Shape
 
@@ -113,12 +113,12 @@ describe(assign1)
 
 Skewness and excess kurtosis for `TNF` and `Inflammation`:
 
-TNF) skewness: **0.06** / excess kurtosis: **-0.05** \
+TNF) skewness: **0.06** / excess kurtosis: **-0.05**\
 Inflammation) skewness: **1.36** / excess kurtosis: **4.06**
 
 # Question 8: TNF Skewness and Kurtosis
 
-According the value of skewness and kurtosis value, of which both values are near zero, these values indicate that the shape of the distribution is symmetric and bell-shaped. This supports my interpretation that the distribution is close to bell-shape. 
+According the value of skewness and kurtosis value, of which both values are near zero, these values indicate that the shape of the distribution is symmetric and bell-shaped. This supports my interpretation that the distribution is close to bell-shape.
 
 # Question 9: Inflammation Skewness and Kurtosis
 
@@ -152,7 +152,7 @@ par(mfrow = c(1, 1))
 
 # Question 11: Interpret the Q–Q Plot
 
-Departures from the reference line at both the lower and upper ends of the Q-Q plot describes the skewness and kurtosis. In terms of inflammation composite, the Q-Q plot shows that the data placed in upper ends showed much more departures compared to the lower ends. This leads to the positive skewness. In addition, since both tails away from the line, this refers to heavy tails, which is high kurtosis. Hence, the observation scores are farther from the center than expected under a normal distribution (especially for the upper ends), and this appeared in histogram with the extremely high values (which are outliers) on the right side of the distribution.
+Departures from the reference line at both the lower and upper ends of the Q-Q plot describes the skewness and kurtosis. In terms of inflammation composite, the Q-Q plot shows that the data placed in upper ends showed much more departures compared to the lower ends. This leads to the positive skewness. In addition, since upper tails suddenly climb high from the reference line, this refers to heavy tails, which leads to high kurtosis. Hence, the observation scores are farther from the center than expected under a normal distribution (especially for the upper ends), and this appeared in histogram with the extremely high values (which are outliers) on the right side of the distribution.
 
 # Question 12: Side-by-Side Histograms by ELS
 
@@ -169,20 +169,803 @@ ggplot(assign1, aes(x = Inflammation, colour = ELS)) +
 
 Which suggestion you selected and why it should improve the display:
 
-TYPE YOUR ANSWER HERE
+I chose Option 7: My (AI's) preferred solution. This option retains the histogram and density plot, and illustrates the vertical line by using `geom_vline()` to indicate the place of the mean value. However, since it is hard to figure out the exact mean value, I additionally asked to AI to add value labels of mean and median for each group. By using same colors and adding the labels of central tendency value, it gives me better instinction about the distribution.
 
 The modified code:
 
 ```{r}
-# PASTE AI'S CODE HERE
+
+library(ggplot2)
+library(dplyr)
+
+# Calculate group statistics
+group_stats <- assign1 %>%
+  group_by(ELS) %>%
+  summarize(
+    mean_inf = mean(Inflammation, na.rm = TRUE),
+    median_inf = median(Inflammation, na.rm = TRUE),
+    n = sum(!is.na(Inflammation))
+  )
+
+ggplot(assign1, aes(x = Inflammation)) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    bins = 20,
+    fill = "skyblue",
+    color = "white"
+  ) +
+  geom_density(linewidth = 1) +
+  
+  # Mean line
+  geom_vline(
+    data = group_stats,
+    aes(xintercept = mean_inf),
+    color = "red",
+    linetype = "dashed",
+    linewidth = 1.2
+  ) +
+  
+  # Median line
+  geom_vline(
+    data = group_stats,
+    aes(xintercept = median_inf),
+    color = "blue",
+    linetype = "solid",
+    linewidth = 1.2
+  ) +
+  
+  # Mean label
+  geom_text(
+    data = group_stats,
+    aes(
+      x = mean_inf,
+      y = Inf,
+      label = paste0("Mean = ", round(mean_inf, 2))
+    ),
+    color = "red",
+    fontface = "bold",
+    vjust = 1.5,
+    hjust = -0.1
+  ) +
+  
+  # Median label
+  geom_text(
+    data = group_stats,
+    aes(
+      x = median_inf,
+      y = Inf,
+      label = paste0("Median = ", round(median_inf, 2))
+    ),
+    color = "blue",
+    fontface = "bold",
+    vjust = 3.0,
+    hjust = -0.1
+  ) +
+  
+  facet_wrap(~ELS) +
+  labs(
+    x = "Inflammation",
+    y = "Density"
+  ) +
+  theme_bw()
 ```
 
 # Question 14: Conclusion About ELS and Inflammation
 
-TYPE YOUR ANSWER HERE
+According to the values of mean and median, early life stress may influence on higher level of inflammation later in life. However, I cannot be confident with the significant difference between these two visual distribution. Both distributions seem quite similar, sucah as positively skewed and modes are at the peak.
 
 # Question 15: Chat Log
 
 ```         
-PASTE YOUR CHAT LOG HERE
+
+
+
+Auto
+
+
+
+You said:
+I'd like to draw normal Q-Q plots to examine the shape of distributions. I am currently using a data named with "assign1" and I'd like to work with the variables "TNF" and "Inflammation". I wanted to ask you to: 
+
+
+(1) provide R code that creates separate normal Q–Q plots of the  and  variables, each with a reference line, and (2) explain what the axes and reference lines represent and how departures from the lines can provide evidence about distribution shape.
+
+Copilot said:
+For your assign1 data frame, you can create separate normal Q-Q plots for TNF and Inflammation using the base R functions qqnorm() and qqline().
+
+R code
+
+
+# Create a 1 x 2 plotting layout
+par(mfrow = c(1, 2))
+ 
+# Q-Q plot for TNF
+qqnorm(assign1$TNF,
+       main = "Normal Q-Q Plot: TNF",
+       xlab = "Theoretical Normal Quantiles",
+       ylab = "Observed TNF Quantiles")
+qqline(assign1$TNF, col = "red", lwd = 2)
+ 
+# Q-Q plot for Inflammation
+qqnorm(assign1$Inflammation,
+       main = "Normal Q-Q Plot: Inflammation",
+       xlab = "Theoretical Normal Quantiles",
+       ylab = "Observed Inflammation Quantiles")
+qqline(assign1$Inflammation, col = "red", lwd = 2)
+ 
+# Restore default plotting layout
+par(mfrow = c(1, 1))
+If you prefer each plot to appear in its own plotting window rather than side-by-side, simply run each qqnorm() / qqline() pair separately.
+
+How to interpret a normal Q-Q plot
+A normal Q-Q (quantile-quantile) plot compares the distribution of your observed data to the distribution expected under a normal distribution.
+
+Axes
+X-axis: Theoretical Normal Quantiles
+
+These are the values that would be expected if the data followed a perfectly normal distribution.
+They come from a standard normal distribution and represent expected percentiles.
+Y-axis: Observed Sample Quantiles
+
+These are the actual ordered values from your variable (TNF or Inflammation).
+Each observed value is paired with the corresponding theoretical normal quantile.
+Reference line
+The line added by qqline() serves as a benchmark for normality.
+
+If the data are approximately normally distributed, the points should fall close to this line.
+The line is drawn using the sample's first and third quartiles and the corresponding quartiles of a normal distribution.
+What departures from the line indicate
+Approximately normal distribution
+Points follow the reference line fairly closely across the entire plot.
+
+•
+  •
+    •
+      •
+        •
+Interpretation: The distribution is roughly normal.
+
+Right-skewed (positive skew)
+Points bend upward at the right end of the plot.
+
+        •
+      •
+    •
+  •
+•
+         •
+            •
+Interpretation:
+
+A longer upper tail than expected under normality.
+Often indicates some unusually large values.
+Left-skewed (negative skew)
+Points bend downward at the left end.
+
+      •
+         •
+•
+  •
+    •
+      •
+Interpretation:
+
+A longer lower tail than expected under normality.
+Often indicates some unusually small values.
+Heavy tails (leptokurtic)
+Both ends deviate away from the line:
+
+•           •
+  •       •
+    •   •
+      •
+Interpretation:
+
+More extreme values than expected under a normal distribution.
+Tails are heavier than normal.
+Light tails (platykurtic)
+Both ends curve inward toward the line:
+
+      •
+    •   •
+  •       •
+Interpretation:
+
+Fewer extreme values than expected under a normal distribution.
+Tails are lighter than normal.
+Outliers
+One or a few points fall far from the line while most points remain close.
+
+Interpretation:
+
+Potential outliers or influential observations.
+Worth investigating alongside descriptive statistics and boxplots.
+When examining your TNF and Inflammation variables, focus less on whether every point lies exactly on the line and more on whether there is a systematic pattern of curvature. Minor departures are common, especially with moderate sample sizes, whereas pronounced curves or extreme points provide evidence that the distribution departs from normality.
+
+
+
+
+
+You said:
+I cannot understand your visualization. Could you illustrate other plots for better understanding?
+Copilot said:
+Absolutely. The ASCII sketches I used are often harder to interpret than actual examples. Below are more realistic Q-Q plot shapes that you can mentally compare to your plots.
+
+1. Approximately normal distribution
+Points closely follow the reference line.
+
+Observed
+Quantiles
+   ^
+  3|                         •
+  2|                    •
+  1|               •
+  0|          •
+ -1|     •
+ -2|•
+   +---------------------------->
+      Theoretical Normal Quantiles
+✅ Interpretation: Data are approximately normally distributed.
+
+2. Right-skewed (positively skewed) distribution
+The upper tail is longer than expected. The points bend upward on the right side.
+
+Observed
+Quantiles
+   ^
+  4|                              •
+  3|                         •
+  2|                    •
+  1|               •
+  0|          •
+ -1|     •
+ -2|•
+   +---------------------------->
+      Theoretical Normal Quantiles
+The rightmost points are well above the line.
+
+✅ Interpretation: A few unusually large values create a long right tail.
+
+Common examples:
+
+Income
+Biomarkers such as TNF levels
+Reaction times
+3. Left-skewed (negatively skewed) distribution
+The lower tail is longer than expected. The points bend downward on the left side.
+
+Observed
+Quantiles
+   ^
+  2|                         •
+  1|                    •
+  0|               •
+ -1|          •
+ -2|     •
+ -4|•
+   +---------------------------->
+      Theoretical Normal Quantiles
+The leftmost points are well below the line.
+
+✅ Interpretation: A few unusually small values create a long left tail.
+
+4. Heavy tails (more extreme observations than normal)
+Both ends move away from the line.
+
+Observed
+Quantiles
+   ^
+  4|                            •
+  3|                       •
+  2|                   •
+  1|               •
+  0|           •
+ -1|       •
+ -2|   •
+ -4|•
+   +---------------------------->
+      Theoretical Normal Quantiles
+Notice:
+
+Left tail falls below the line.
+Right tail rises above the line.
+✅ Interpretation: More extreme observations than expected under normality.
+
+5. Light tails (fewer extremes than normal)
+Both ends bend toward the reference line.
+
+Observed
+Quantiles
+   ^
+  2|                      •
+  1|                 •
+  0|            •
+ -1|       •
+ -2|  •
+   +---------------------------->
+      Theoretical Normal Quantiles
+✅ Interpretation: Fewer extreme values than a normal distribution.
+
+The easiest rule to remember
+When looking at a Q-Q plot:
+
+Good fit to normality
+\
+ \
+  \
+   \
+    \
+Points roughly trace a straight line.
+
+Right skew
+      /
+     /
+    /
+   /
+ _/
+Upper end bends upward.
+
+Left skew
+\
+ \
+  \
+   \
+    \_
+Lower end bends downward.
+
+Heavy tails
+/
+ \
+  \
+ /
+Both tails pull away from the line.
+
+For your TNF and Inflammation variables
+In biomedical and psychological datasets, inflammatory markers such as TNF are frequently right-skewed because most individuals have relatively low values while a few have very high values. Thus, it would not be surprising if your TNF Q-Q plot shows points following the line in the middle but curving upward at the upper-right end.
+
+To make interpretation even easier, I recommend examining a histogram alongside the Q-Q plot:
+
+
+
+par(mfrow = c(2, 2))
+ 
+hist(assign1$TNF,
+     main = "Histogram of TNF",
+     xlab = "TNF")
+ 
+qqnorm(assign1$TNF,
+       main = "Q-Q Plot of TNF")
+qqline(assign1$TNF, col = "red")
+ 
+hist(assign1$Inflammation,
+     main = "Histogram of Inflammation",
+     xlab = "Inflammation")
+ 
+qqnorm(assign1$Inflammation,
+       main = "Q-Q Plot of Inflammation")
+qqline(assign1$Inflammation, col = "red")
+A helpful way to learn Q-Q plots is to compare each variable's histogram and Q-Q plot side by side. The histogram shows the shape directly, while the Q-Q plot often reveals departures from normality more clearly.
+
+
+
+
+
+You said:
+Could you illustrate the figure with the q-q plot data point and reference line simultaneously?
+Copilot said:
+Yes. The key thing missing from the earlier sketches was the reference line itself. In a real Q-Q plot, you compare the pattern of points to that line.
+
+Below, the solid diagonal line (/) represents the reference line, and the dots (•) are the observed data quantiles.
+
+Approximately normal distribution
+The points fall close to the reference line.
+
+Observed Quantiles
+ ^
+ |
+3|                           •
+ |                         //
+2|                      •//
+ |                    //
+1|                 •//
+ |               //
+0|            •//
+ |          //
+-1|       •//
+ |     //
+-2|  •//
+ +-------------------------------->
+    Theoretical Normal Quantiles
+Interpretation: The distribution is approximately normal because the points track the line closely.
+
+Right-skewed distribution
+The upper tail rises above the reference line.
+
+Observed Quantiles
+ ^
+ |
+4|                              •
+ |                           •
+3|                        •
+ |                      //
+2|                   •//
+ |                •//
+1|             •//
+ |          //
+0|       •//
+ |    //
+-1| •//
+ +-------------------------------->
+    Theoretical Normal Quantiles
+Pattern to remember: the points "peel upward" on the right.
+
+Interpretation: A few unusually large values produce a long right tail.
+
+Left-skewed distribution
+The lower tail falls below the reference line.
+
+Observed Quantiles
+ ^
+ |
+3|                         •
+ |                      •//
+2|                   •//
+ |                •//
+1|             •//
+ |          //
+0|       •//
+ |    //
+-1| •
+ |  •
+-2|    •
+ +-------------------------------->
+    Theoretical Normal Quantiles
+Pattern to remember: the points "peel downward" on the left.
+
+Interpretation: A few unusually small values produce a long left tail.
+
+Heavy tails (more extreme values than normal)
+Both tails depart from the line.
+
+Observed Quantiles
+ ^
+ |
+4|                              •
+ |                          •
+3|                      •//
+ |                   •//
+2|                •//
+ |             •//
+1|          •//
+ |       •//
+0|    •//
+ |  •
+-1|•
+ +-------------------------------->
+    Theoretical Normal Quantiles
+Interpretation:
+
+Left tail falls below the line.
+Right tail rises above the line.
+The distribution has more extreme observations than expected under normality.
+
+Light tails (fewer extreme values than normal)
+Both tails bend toward the line.
+
+Observed Quantiles
+ ^
+ |
+3|                     •
+ |                  //
+2|                ///
+ |             •//
+1|          •//
+ |       •//
+0|    •//
+ |  ///
+-1| •
+ +-------------------------------->
+    Theoretical Normal Quantiles
+Interpretation: The distribution has fewer extreme observations than a normal distribution.
+
+The most common pattern: right skew
+For variables like TNF, this is often what researchers see:
+
+Observed Quantiles
+ ^
+ |
+4|                                •
+ |                            •
+3|                        •
+ |                     •
+2|                 •//
+ |             •//
+1|         •//
+ |      •//
+0|   •//
+ | //
+-1|•
+ +-------------------------------->
+    Theoretical Normal Quantiles
+Notice that:
+
+The middle of the distribution follows the line reasonably well.
+The largest observations curve upward away from the line.
+This suggests a long right tail.
+A practical trick
+When you look at your actual Q-Q plot, mentally divide it into three regions:
+
+Left tail | Middle | Right tail
+Then ask:
+
+Does the left tail deviate?
+Does the middle follow the line?
+Does the right tail deviate?
+For example:
+
+Pattern	Conclusion
+All points near line	Approximately normal
+Right tail above line	Right-skewed
+Left tail below line	Left-skewed
+Both tails away from line	Heavy tails
+Both tails toward line	Light tails
+Many researchers find it helpful to think of a Q-Q plot as a test of "How straight is the cloud of points?" The closer the points are to a straight line, the closer the distribution is to normal. Curvature, especially in the tails, tells you how the distribution differs from normality.
+
+
+
+
+
+You said:
+If the both tails rises above the line, how can I interpret the result?
+Copilot said:
+Great question. If both tails rise above the reference line, that is not the typical "heavy tails" pattern. The interpretation depends on the overall shape of the curve.
+
+A useful way to think about Q-Q plots is that the pattern of points reflects the shape of the distribution.
+
+Case 1: Both tails above the line and the middle below the line
+This produces a U-shaped pattern:
+
+Observed Quantiles
+ ^
+ |
+4| •                           •
+ |   \                       /
+3|    \                     /
+ |     \                   /
+2|      \                 /
+ |       •             •
+1|         \         /
+ |          \       /
+0|-----------\---/------------  Reference line
+ |
+ +-------------------------------->
+    Theoretical Quantiles
+Interpretation
+This suggests heavier tails than a normal distribution (leptokurtosis).
+
+More extreme observations than expected under normality.
+The center of the distribution is more concentrated.
+Both tails contain more observations than the normal distribution predicts.
+Case 2: Both tails below the line and the middle above the line
+This produces an inverted U-shape:
+
+Observed Quantiles
+ ^
+ |
+4|       •             •
+ |      /               \
+3|     /                 \
+ |    /                   \
+2|   /                     \
+ |  •                       •
+1|
+ |-----------/---\------------  Reference line
+0|
+ +-------------------------------->
+    Theoretical Quantiles
+Interpretation
+This suggests lighter tails than a normal distribution (platykurtosis).
+
+Fewer extreme observations than expected.
+Less variability in the tails.
+Case 3: Literally all points are above the line
+For example:
+
+Observed Quantiles
+ ^
+ |
+4|               •
+ |            •
+3|         •
+ |      •
+2|   •
+ | •
+ |
+ +------------------------------->
+
+      //////////  reference line
+This is usually not interpreted as a shape issue.
+
+Instead, it means the sample quantiles are shifted upward relative to the line. A Q-Q plot is primarily about the pattern of curvature, not whether points are uniformly above or below the line.
+
+If the points are approximately straight but consistently above the line, the distribution may still be approximately normal; the difference reflects location and scale rather than skewness or kurtosis.
+
+A quick diagnostic table
+Pattern	Interpretation
+Straight line	Approximately normal
+Left tail below, right tail above	Heavy tails
+Left tail above, right tail below	Light tails
+Both tails above, center below (U-shape)	Heavy tails / leptokurtic
+Both tails below, center above (inverted U)	Light tails / platykurtic
+Right tail above only	Right-skewed
+Left tail below only	Left-skewed
+For your TNF and Inflammation variables, if you can describe the pattern more specifically (for example, "the left tail is above the line, the middle is below, and the right tail is above"), I can help identify the exact distributional shape you're seeing.
+
+
+
+
+
+You said:
+10월 7
+
+
+
+Rplot01.png
+Ok. let's move onto next task. 
+ I'd like to figure out whether participants who report adverse early life stressors ( = 1) have different levels of inflammation than participants who report no adverse stressors ( = 0). In other words, I'd like to determine whether adverse early-life stressors are associated with inflammation later in life. Based on the data frame 'assign1' and variable 'Inflammation' and grouping variable 'ELS', I draw the histogram and density plot using ggplot2: 
+ ggplot(assign1, aes(x = Inflammation, colour = ELS)) + geom_histogram(aes(y = after_stat(density))) + geom_density() + facet_wrap(~ ELS) 
+ and I attached the result figure. 
+ I'd like to ask you for suggesting ways to improve the graph so that differences between the two groups are easier to evaluate, while retaining histograms as the style of display.
+
+Copilot said:
+This is actually a fairly good graph already. The faceting makes it easy to compare shapes, but it is still somewhat difficult to answer your substantive question:
+
+Do participants with early-life stress tend to have higher inflammation than participants without early-life stress?
+
+The reason is that histograms are excellent for showing distribution shape, but they are less effective for comparing group location (means, medians, overall shifts).
+
+A few modifications can make the comparison much clearer while retaining histograms.
+
+Option 1: Add vertical lines for group means and/or medians
+This is probably the single most useful improvement.
+
+
+
+library(ggplot2)
+ 
+ggplot(assign1, aes(x = Inflammation)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 20,
+                 fill = "grey70",
+                 color = "white") +
+  geom_density(color = "blue", linewidth = 1) +
+  geom_vline(
+    data = aggregate(Inflammation ~ ELS, assign1, mean),
+    aes(xintercept = Inflammation),
+    color = "red",
+    linewidth = 1.2,
+    linetype = "dashed"
+  ) +
+  facet_wrap(~ELS) +
+  labs(x = "Inflammation",
+       y = "Density")
+Why this helps:
+
+The histogram shows shape.
+The density curve smooths the shape.
+The vertical line lets you immediately compare central tendency across groups.
+Option 2: Use identical fill colors and remove the legend
+In your current figure, the color encodes ELS even though the panels already separate ELS.
+
+
+
+ggplot(assign1, aes(x = Inflammation)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 20,
+                 fill = "steelblue",
+                 color = "white") +
+  geom_density(color = "black") +
+  facet_wrap(~ELS) +
+  theme(legend.position = "none")
+Why this helps:
+
+Eliminates redundant information.
+Reduces visual clutter.
+Directs attention to differences in distributions.
+Option 3: Force exactly the same axis scales
+I think your plot already does this, but it's worth checking.
+
+
+
+facet_wrap(~ELS, scales = "fixed")
+Why this helps:
+
+Differences in spread and location can only be meaningfully compared if the axes are identical.
+Different scales can exaggerate or hide group differences.
+Option 4: Add rug plots
+A rug plot displays individual observations.
+
+
+
+ggplot(assign1, aes(x = Inflammation)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 20,
+                 fill = "grey70") +
+  geom_density() +
+  geom_rug(alpha = .3) +
+  facet_wrap(~ELS)
+Why this helps:
+
+Reveals sample size differences.
+Shows clustering and outliers.
+Helps detect whether apparent peaks are supported by many observations.
+Option 5: Overlay the two histograms in the same panel
+If your goal is group comparison, this is often better than faceting.
+
+
+
+ggplot(assign1,
+       aes(x = Inflammation,
+           fill = factor(ELS))) +
+  geom_histogram(
+    aes(y = after_stat(density)),
+    position = "identity",
+    alpha = .4,
+    bins = 20
+  ) +
+  geom_density(aes(color = factor(ELS)),
+               linewidth = 1)
+Why this helps:
+
+Makes shifts in the distributions visually obvious.
+Easier to see whether one group's distribution is systematically farther right.
+Why it may be worse:
+
+Histograms can become cluttered when there is substantial overlap.
+Option 6: Add the overall sample mean/median to both panels
+This is excellent pedagogically.
+
+
+
+overall_mean <- mean(assign1$Inflammation, na.rm = TRUE)
+ 
+ggplot(assign1, aes(x = Inflammation)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 fill = "grey70") +
+  geom_density() +
+  geom_vline(xintercept = overall_mean,
+             color = "black",
+             linewidth = 1,
+             linetype = "dotted") +
+  facet_wrap(~ELS)
+Why this helps:
+
+You can immediately see which group lies above or below the overall average.
+Option 7: My preferred solution
+For answering your research question while keeping histograms:
+
+
+
+library(dplyr)
+ 
+group_means <- assign1 %>%
+  group_by(ELS) %>%
+  summarize(mean_inf = mean(Inflammation, na.rm = TRUE))
+ 
+ggplot(assign1, aes(x = Inflammation)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 20,
+                 fill = "skyblue",
+                 color = "white") +
+  geom_density(linewidth = 1) +
+  geom_vline(data = group_means,
+             aes(xintercept = mean_inf),
+             color = "red",
+             linewidth = 1.2,
+             linetype = "dashed") +
+  facet_wrap(~ELS) +
+  theme_bw()
+This retains the histogram, preserves information about skewness and outliers, and adds a clear visual cue for comparing inflammation levels between the ELS groups.
+
+One additional point: if your primary goal is to compare inflammation between ELS = 0 and ELS = 1, many researchers would supplement the histogram with a boxplot or violin plot, because those displays are specifically designed for comparing group distributions and central tendencies. Histograms are excellent for describing the shape of each group's distribution, but not necessarily the most efficient display for testing the substantive hypothesis.
 ```
