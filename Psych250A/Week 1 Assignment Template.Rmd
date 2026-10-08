@@ -55,7 +55,15 @@ dfSummary(assign1)
 Your code:
 
 ```{r}
-# TYPE YOUR CODE HERE
+assign1$ELS <- factor(assign1$ELS,
+                           levels = c(0, 1),
+                           labels = c("No early life stress", "Early life stress"))
+
+assign1$Female <- factor(assign1$Female,
+                           levels = c(0, 1),
+                           labels = c("Male", "Female"))
+
+freq(assign1)
 ```
 
 # Question 3: Inflammation Sum Score
@@ -63,7 +71,12 @@ Your code:
 Your code:
 
 ```{r}
-# TYPE YOUR CODE HERE
+assign1$Inflammation <- rowSums(
+assign1[, c("CRP",
+"IL6",
+"TNF",
+"IFN")]
+)
 ```
 
 # Question 4: Histograms with Density Curves
@@ -71,55 +84,85 @@ Your code:
 Your code:
 
 ```{r}
-# TYPE YOUR CODE HERE
+# TNF
+ggplot(assign1, aes(x = TNF)) +
+  geom_histogram(aes(y = after_stat(density))) +
+  geom_density()
+
+# Inflammation
+ggplot(assign1, aes(x = Inflammation)) +
+  geom_histogram(aes(y = after_stat(density))) +
+  geom_density()
 ```
 
 # Question 5: TNF Distribution Shape
 
-TYPE YOUR ANSWER HERE
+Based on the histogram and density curve, it seems that the distribution shape is close to a symmetric, bell-shaped distribution, of which skewness and kurtosis values near zero. Because the majority of data are placed in the middle of the distribution, and high and low extreme scores would be cancel out, which is then symmetrically dispersed to both sides. 
 
 # Question 6: Inflammation Distribution Shape
 
-TYPE YOUR ANSWER HERE
+Based on the histogram and density curve, it seems that the distribution shape is positively skewed, because a few of extreme high values are placed in the right tail. Meanwhile, the mode is at the peak, and the data showed some high degree of peakedness, which may indicate to relatively high kurtosis.
 
 # Question 7: Descriptive Statistics
 
 Your code:
 
 ```{r}
-# TYPE YOUR CODE HERE
+describe(assign1)
 ```
 
 Skewness and excess kurtosis for `TNF` and `Inflammation`:
 
-TYPE YOUR ANSWER HERE
+TNF) skewness: **0.06** / excess kurtosis: **-0.05** \
+Inflammation) skewness: **1.36** / excess kurtosis: **4.06**
 
 # Question 8: TNF Skewness and Kurtosis
 
-TYPE YOUR ANSWER HERE
+According the value of skewness and kurtosis value, of which both values are near zero, these values indicate that the shape of the distribution is symmetric and bell-shaped. This supports my interpretation that the distribution is close to bell-shape. 
 
 # Question 9: Inflammation Skewness and Kurtosis
 
-TYPE YOUR ANSWER HERE
+According the values of skewness and kurtosis value, which showed relatively high positive values, these indicate that the distribution is positively skewed and highly peaked. This also supports my interpretation that the distribution is positively skewed and high degree of peakedness.
 
 # Question 10: AI Prompt for Q–Q Plots
 
 AI's code:
 
 ```{r}
-# PASTE AI'S CODE HERE
+# Create a 1 x 2 plotting layout
+par(mfrow = c(1, 2))
+
+# Q-Q plot for TNF
+qqnorm(assign1$TNF,
+       main = "Normal Q-Q Plot: TNF",
+       xlab = "Theoretical Normal Quantiles",
+       ylab = "Observed TNF Quantiles")
+qqline(assign1$TNF, col = "red", lwd = 2)
+
+# Q-Q plot for Inflammation
+qqnorm(assign1$Inflammation,
+       main = "Normal Q-Q Plot: Inflammation",
+       xlab = "Theoretical Normal Quantiles",
+       ylab = "Observed Inflammation Quantiles")
+qqline(assign1$Inflammation, col = "red", lwd = 2)
+
+# Restore default plotting layout
+par(mfrow = c(1, 1))
 ```
 
 # Question 11: Interpret the Q–Q Plot
 
-TYPE YOUR ANSWER HERE
+Departures from the reference line at both the lower and upper ends of the Q-Q plot describes the skewness and kurtosis. In terms of inflammation composite, the Q-Q plot shows that the data placed in upper ends showed much more departures compared to the lower ends. This leads to the positive skewness. In addition, since both tails away from the line, this refers to heavy tails, which is high kurtosis. Hence, the observation scores are farther from the center than expected under a normal distribution (especially for the upper ends), and this appeared in histogram with the extremely high values (which are outliers) on the right side of the distribution.
 
 # Question 12: Side-by-Side Histograms by ELS
 
 Your code:
 
 ```{r}
-# TYPE YOUR CODE HERE
+ggplot(assign1, aes(x = Inflammation, colour = ELS)) +
+  geom_histogram(aes(y = after_stat(density))) +
+  geom_density() +
+  facet_wrap(~ ELS)
 ```
 
 # Question 13: AI Suggestions to Improve the Graph
