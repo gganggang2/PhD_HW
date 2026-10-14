@@ -1,0 +1,140 @@
+---
+title: "SEMTree Practice"
+author: "Seongmin Park"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
+    theme: cosmo
+    highlight: haddock
+editor_options:
+  chunk_output_type: console
+knit: (function(input, ...) rmarkdown::render(input, output_file = xfun::with_ext(basename(input), "html"), output_dir = dirname(input)))
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data: Korean Youth Panel Data (2016\~2020)
+
+```{r Data_load}
+
+library(haven)
+library(tidyverse)
+
+kypd <- read.table('/Users/seongminpark/Documents/GitHub/gganggang2.github.io/Personal Project/GMM_KUPD.dat', header = F, sep = "\t", na.strings = "-999")
+
+colnames(kypd) <- c("STID", "t1", "t2", "t3", "t4", "t5", "x1",
+                    "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x9",
+                    "x10", "x11", "x12", "x13", "x14", "x15", "x16",
+                    "x17", "x18", "x19")
+
+kypd <- kypd %>%
+  mutate(across(c(x1, x2, x3, x4), as.factor))
+
+kypd <- as.data.frame(kypd)
+```
+
+## Run SEMTree, based on the prior GMM result
+
+Prior result suggests that the linear trajectory is an optimal shape for teacher-student relationship in terms of conflicts, hence my template model would be modeled as the linear shape as well.
+
+```{r SEMTree}
+
+library(semtree)
+library(lavaan)
+# library(partykit)
+
+# LGM: Equality constraints for measurement error
+# (CO)Variances are constraiend due to the negative variances
+
+covariate_names <- paste0("x", 1:4)
+#x1 : sex (0=female, 1=male)
+#x2 : children's perceived parent's interest for their academic task
+#x3 : level of parent's school participation 
+#x4 : level of parent's interest in their children's school
+#x2~x4 : If levels are high > interests and participations are also high
+
+lgm_data <- kypd[, c("t1", "t2", "t3", "t4", "t5", covariate_names)]
+lgm_data <- as.data.frame(lgm_data)
+
+kypd_lgm <- '
+  I =~ 1*t1 + 1*t2 + 1*t3 + 1*t4 + 1*t5
+  S =~ 0*t1 + 1*t2 + 2*t3 + 3*t4 + 4*t5
+  Q =~ 0*t1 + 1*t2 + 4*t3 + 9*t4 + 16*t5
+  t1 ~~ a*t1
+  t2 ~~ a*t2
+  t3 ~~ a*t3
+  t4 ~~ a*t4
+  t5 ~~ a*t5
+  Q ~~ 0*S
+  Q ~~ 0*I
+  Q ~~ 0*Q
+'
+
+fit_lgm <- lavaan(
+  model = kypd_lgm, 
+  data = lgm_data, 
+  missing = "fiml",
+  model.type = "growth",
+  do.fit = FALSE
+)
+
+summary(fit_lgm, fit.measures = TRUE, standardized = TRUE)
+lavInspect(fit_lgm, "cov.lv")
+
+
+# SEMTree
+
+
+control_settings <- semtree.control(
+  method = "fair",        
+  max.depth = 2,
+  min.N = 10,
+  alpha = 0.05,
+  exclude.heywood = T
+)
+
+kypd_tree <- semtree(
+  model = fit_lgm, 
+  data = lgm_data, 
+  control = control_settings,
+  predictors = covariate_names
+)
+
+plot(kypd_tree)
+summary(kypd_tree)
+```
+
+Something wrong...? in 'fair' method...?\
+'score' method requires complete dataset... hence we need to run **imputation**.
+
+`Error in fairSplit(node$model, mydata, control, invariance, meta, constraints = constraints, : no slot of name "data" for this object of class "lavaan"`
+
+```{r Mplustrees}
+
+library(MplusTrees)
+library(MplusAutomation)
+
+script = mplusObject(
+  TITLE = 'KYPA LGM;',
+  MODEL = 'i s | t1@0 t2@1 t3@2 t4@3 t5@4;',
+  usevariables = c('t1','t2','t3','t4','t5'), 
+  rdata = kypd)
+
+fit.mplustree = MplusTrees(script, kypd, 
+                           group=~STID, 
+                           rPartFormula =~ x1 + x2 + x3, 
+                           control=rpart.control(cp=.001, 
+                                                 minbucket=20,
+                                                 maxdepth=3))
+
+fit.mplustree
+plot(fit.mplustree)
+summary(fit.mplustree)
+```

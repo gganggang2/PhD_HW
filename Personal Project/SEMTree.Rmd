@@ -27,15 +27,75 @@ TALIS 2018 South Korea Data (BTGKOR3.sav)
 ```{r Data_load}
 
 library(haven)
-talis <- read_spss("/Users/seongminpark/Desktop/KEMS/25-Winter/TALIS Collab/투고용/BTGKORT3.sav")
+library(tidyverse)
+library(lavaan)
+library(semtree)
+
+talis <- read_sav('/Users/seongminpark/Documents/GitHub/gganggang2.github.io/Personal Project/BTGKORT3.sav')
+
+talis <- talis |> 
+  mutate(across(where(haven::is.labelled), haven::as_factor))
+
+talis2 <- talis |> 
+  select(TT3G34A, TT3G34B, TT3G34E, TT3G34G,
+         TT3G01, TT3G03, TT3G11B) |> 
+  mutate(across(c(TT3G01, TT3G03), as.factor))
+
+colnames(talis2) <- c("se1", "se2", "se3", "se4",
+                      "gender", "edu", "exp")
+
+talis3 <- talis |> 
+  select(TT3G34C, TT3G34J, TT3G34K, TT3G34L,
+         TT3G01, TT3G03, TT3G11B) |> 
+  mutate(across(c(TT3G01, TT3G03), as.factor))
+
+talis2$gender <- factor(talis2$gender, labels = c("male", "female"))
+talis2$edu <- factor(talis2$edu, labels = c("edu1", "edu2", "edu3", "edu4"))
+
+colnames(talis2) <- c("se1", "se2", "se3", "se4",
+                      "gender", "edu", "exp")
+
+talis2_clean <- talis2[complete.cases(talis2), ]
+  
+
+talis_sem <- '
+  SE =~ se1 + se2 + se3 + se4
+  se1 ~~ se2
+  SE ~ gender
+'
+fit_se <- sem(talis_sem, data = talis2_clean)
+summary(fit_se, fit.measures = T)
+
+# Tree
+
+control_settings <- semtree.control(
+  method = "score",        
+  max.depth = 2,
+  alpha = 0.05            
+)
+
+talis_tree <- semtree(
+  model = fit_se, 
+  data = talis2_clean, 
+  control = control_settings,
+  predictors = c("edu", "exp")
+)
+
+plot(talis_tree)
+summary(talis_tree)
 ```
 
-## Including Plots
+```{r google_Example}
 
-You can also embed plots, for example:
+bw <- with(MASS::birthwt, {
+  ui <- factor(ui, labels=c("no","yes"))
+  ht <- factor(ht, labels=c("no","yes"))
+  smoke <- factor(smoke, labels=c("no","yes"))
+  data.frame( bwt, uterine_irritability=ui, hypertension=ht, smoke, num_premature_labours=ptl, physician_visits=ftv )
+})
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+model <- lavaan::lavaan("bwt~~bwt; bwt~1")
+ctrl <- semtree_control(method="score", max.depth = 2, alpha = 0.01)
+tree <- semtree(model = model, data = bw, control = ctrl)
+plot(tree)
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
