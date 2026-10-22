@@ -62,13 +62,13 @@ stdev <- sd(assign2$Attention)/sqrt(length(assign2$Attention))
 
 Whether your calculation agrees with the descriptive statistics output:
 
-TYPE YOUR ANSWER HERE
+**Yes**. The descriptive statistics output shows the value of 0.33, and the calculated value also shows 0.33, when if the value is rounded to two decimal places.
 
 # Question 3: Explain the Standard Error
 
 Your original passage:
 
-TYPE YOUR ANSWER HERE
+The standard error quantifies typical deviation of sample means from the true mean. Standard error relates to the sampling distribution, because it is the standard deviation of the sampling distribution. The value can be obtained by dividing the population standard devation to square root sample size. In reality, however, we don't know the value of population standard deviation, so we replace this value into sample standard deviation.
 
 Whether you accepted or rejected AI's evaluation of each requirement, and why:
 
@@ -290,6 +290,6 @@ TYPE YOUR ANSWER HERE
 
 # Question 11: Chat Log
 
-`````
+```         
 PASTE YOUR CHAT LOG HERE
-`````
+```
