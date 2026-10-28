@@ -1,6 +1,6 @@
 ---
 title: "Psych 250a — Week 4 Assignment. Confidence Intervals"
-author: "YOUR NAME HERE"
+author: "Seongmin Park"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
   pdf_document:
@@ -80,27 +80,25 @@ CI(assign4$Discrim, ci = 0.95)
 
 Your interpretation of the lower and upper limits:
 
-Explain what the lower and upper limits of the 95% confidence interval from Question 3 represent. 
-Include both numerical limits in your answer. 
-Make sure your explanation specifies which quantities are variable and which are fixed.
+A 95% confidence interval for perceived discrimination of [13.263, 13.861] gives the two most extreme values of the population mean that might reasonably have generated the data. The lower limit value of 13.263 indicates the lowest plausible mean of a population that could reasonably produce our data, whereas the upper limit value of 13.861 indicates the highest plausible mean of a population that could reasonably produce our data. The 'veiled' true population mean remains a fixed value, while the sample mean, sample standard deviation, and lower and upper limits of the confidence interval vary from sample to sample. 
 
 # Question 5: AI Alternative Explanation of a Confidence Interval
 
 The new idea you selected, in your own words, and how it differs from your Question 4 interpretation:
 
-TYPE YOUR ANSWER HERE
+Compared to my interpretation, which focused on the extreme values of a given 95% confidence interval, the AI focused on interpreting the 'range' of values that is likely to contain the population mean of perceived discrimination. The AI also emphasized the importance of interpreting the '95%', which is not the probability that the true mean lies within this specific CI, but rather means that across hypothetically, repetitively drawn samples and their corresponding confidence intervals, approximately 95% of those confidence intervals will contain the true population mean.
 
 # Question 6: Frequentist Meaning of 95% Confidence
 
 Your evaluation:
 
-TYPE YOUR ANSWER HERE
+Similar to question 5, based on the frequentist paradigm, interpreting a 95% CI as a '95% probability that the interval from 13.26 to 13.86 contains the true population mean' is not accurate. In the frequentist paradigm, we have to recall that the population mean is a 'fixed' value. If we hypothetically suppose that we repeatedly draw samples and construct confidence intervals, approximately 95% of those generated confidence intervals will contain the true population mean. Our [13.26, 13.86] 95% CI is simply one specific confidence interval drawn from those hypothetically repeated samples, and its range and limits will naturally vary from sample to sample. 
 
 # Question 7: Frequentist Versus Bayesian Confidence
 
 Your summary of the key difference:
 
-TYPE YOUR ANSWER HERE
+Unlike in the frequentist paradigm, where the population mean is fixed and the sample mean and the corresponding confidence interval vary, the Bayesian paradigm treats the population mean as a random variable that incorporates 'uncertainty'. By combining the prior information the researcher has with the fixed sample data, the posterior distribution of the population mean can be derived, which is fixed once conditioned on the observed data. Thus, interpreting the 95% CI as '95% probability that the interval from 13.26 to 13.86 contains the true population mean' is valid from a Bayesian perspective, since this probability can be derived directly from the posterior distribution. 
 
 # Question 8: Confidence Intervals by Sex
 
@@ -117,10 +115,63 @@ ggplot(assign4, aes(x = Female, y = Discrim)) +
 
 Your answer:
 
-TYPE YOUR ANSWER HERE
+Based on the 'inference by eye' rules, the error bars overlap by less than 50% while still showing some degree of overlap. This suggests an intermediate to significant mean difference between males and females. Meanwhile, The mean values show that females have a higher mean than males.
 
 # Question 10: Chat Log
 
 `````
-PASTE YOUR CHAT LOG HERE
+You said:
+
+Here is my interpretation of a 95% confidence interval: 
+
+
+A 95% confidence interval for perceived discrimination of [13.263, 13.861] gives the two most extreme values of the population mean that might reasonably have generated the data. The lower limit value of 13.263 indicates the lowest plausible mean of a population that could reasonably produce our data, whereas the upper limit value of 13.861 indicates the highest plausible mean of a population that could reasonably produce our data. The 'veiled' true population mean remains a fixed value, while the sample mean, sample standard deviation, and lower and upper limits of the confidence interval vary from sample to sample. 
+
+
+Give me an alternative explanation of a confidence interval.
+
+Copilot said:
+
+Here's an alternative way to explain the same confidence interval:
+
+A 95% confidence interval of [13.263, 13.861] is a range of values that is consistent with the observed data under our statistical model. Based on this sample, we estimate that the population mean perceived discrimination is likely to lie somewhere between 13.263 and 13.861. Although the true population mean is unknown and fixed, the interval reflects the uncertainty that arises from using a sample rather than measuring the entire population.
+
+The "95%" does not mean there is a 95% probability that the true mean is in this specific interval. Instead, it means that if we repeatedly drew samples from the same population and constructed confidence intervals using the same method, approximately 95% of those intervals would contain the true population mean. The interval obtained from the current sample is just one of those possible intervals.
+
+This explanation emphasizes the long-run sampling interpretation of confidence intervals, whereas your original explanation emphasizes the idea of plausible population means that could have generated the observed data. Both are correct and commonly used, but they highlight different aspects of statistical inference.
+
+You said:
+
+Here is my explanation of 95% confidence in the frequentist framework: 
+
+
+Based on the frequentist paradigm, interpreting a 95% CI as a '95% probability that the interval from 13.26 to 13.86 contains the true population mean' is not accurate. In the frequentist paradigm, we have to recall that the population mean is a 'fixed value. If we hypothetically suppose that we repeatedly draw samples and construct confidence intervals, approximately 95% of those generated confidence intervals will contain the true population mean. Our [13.26, 13.86] 95% CI is simply one specific confidence interval drawn from those hypothetically repeated samples, and its range and limits will naturally vary from sample to sample. 
+
+
+Suppose the interval from 13.26 to 13.86 were a 95% Bayesian credible interval. Explain what “95% confident” or “95% probability” would mean for this interval from the Bayesian perspective.
+
+Copilot said:
+
+From the Bayesian perspective, the interpretation changes because the population mean is treated as an unknown quantity about which we have uncertainty, and probability is used to describe that uncertainty.
+
+You could say:
+
+If the interval from 13.26 to 13.86 is a 95% Bayesian credible interval for the population mean perceived discrimination, then, given the observed data and the prior information used in the analysis, there is a 95% probability that the true population mean lies between 13.26 and 13.86.
+
+In other words, after combining prior beliefs with the sample data, the posterior distribution assigns 95% of its probability mass to values of the population mean within the interval [13.26, 13.86].
+
+A more detailed explanation might be:
+
+Unlike the frequentist framework, the Bayesian framework treats the population mean as an unknown parameter with a probability distribution that represents our uncertainty about its value. Before observing the data, we specify a prior distribution for the population mean. After observing the data, we update that prior using Bayes' theorem to obtain a posterior distribution. The interval [13.26, 13.86] is then chosen so that it contains 95% of the posterior probability. Therefore, it is legitimate in the Bayesian framework to say that there is a 95% probability that the true population mean lies within this interval, conditional on the model, prior assumptions, and observed data.
+
+A concise contrast between the two approaches is:
+
+Frequentist 95% CI: The parameter is fixed, the interval is random. Before observing the data, 95% of intervals produced by the procedure will contain the true parameter.
+Bayesian 95% credible interval: The observed interval is fixed, the parameter is uncertain. Given the data and prior, there is a 95% probability that the parameter lies within the interval.
+This distinction is often summarized as:
+
+Frequentist: "95% of similarly constructed intervals will contain the true mean."
+
+Bayesian: "Given the data and prior information, there is a 95% probability that the true mean is between 13.26 and 13.86."
+
 `````
