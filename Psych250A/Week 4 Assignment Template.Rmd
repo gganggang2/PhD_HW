@@ -1,0 +1,126 @@
+---
+title: "Psych 250a — Week 4 Assignment. Confidence Intervals"
+author: "YOUR NAME HERE"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    latex_engine: xelatex
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+    theme: cosmo
+    highlight: haddock
+header-includes:
+  - \usepackage{fvextra}
+  - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere,commandchars=\\\{\}}
+  - \fvset{breaklines=true, breakanywhere=true}
+  - \RecustomVerbatimEnvironment{verbatim}{Verbatim}{breaklines,breakanywhere}
+editor_options:
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  error = TRUE,
+  comment = "",
+  fig.width = 8,
+  fig.height = 5)
+
+options(scipen = 999, width = 80)
+```
+
+# Question 1: Import and Summarize the Data
+
+Your code:
+
+```{r}
+library(ggplot2)
+library(Rmisc)
+library(summarytools)
+library(psych)
+
+filepath <- "https://raw.githubusercontent.com/craigenders/psych250a/main/data/assignment4.csv"
+
+assign4 <- read.csv(filepath, stringsAsFactors = TRUE)
+
+dfSummary(assign4)
+
+describe(assign4)
+```
+
+# Question 2: Convert Female to a Factor
+
+Your code: 
+
+```{r}
+assign4$Female <- factor(assign4$Female,
+                           levels = c(0, 1),
+                           labels = c("Male", "Female"))
+
+freq(assign4$Female)
+```
+
+# Question 3: 95% Confidence Interval for Perceived Discrimination
+
+Your code:
+
+```{r}
+CI(assign4$Discrim, ci = 0.95)
+```
+
+# Question 4: Interpret the Confidence Limits
+
+Your interpretation of the lower and upper limits:
+
+Explain what the lower and upper limits of the 95% confidence interval from Question 3 represent. 
+Include both numerical limits in your answer. 
+Make sure your explanation specifies which quantities are variable and which are fixed.
+
+# Question 5: AI Alternative Explanation of a Confidence Interval
+
+The new idea you selected, in your own words, and how it differs from your Question 4 interpretation:
+
+TYPE YOUR ANSWER HERE
+
+# Question 6: Frequentist Meaning of 95% Confidence
+
+Your evaluation:
+
+TYPE YOUR ANSWER HERE
+
+# Question 7: Frequentist Versus Bayesian Confidence
+
+Your summary of the key difference:
+
+TYPE YOUR ANSWER HERE
+
+# Question 8: Confidence Intervals by Sex
+
+Your code:
+
+```{r}
+group.CI(Discrim ~ Female, data = assign4, ci = 0.95)
+
+ggplot(assign4, aes(x = Female, y = Discrim)) +
+  stat_summary(fun.data = mean_cl_normal, geom = "pointrange")
+```
+
+# Question 9: Compare the Groups
+
+Your answer:
+
+TYPE YOUR ANSWER HERE
+
+# Question 10: Chat Log
+
+`````
+PASTE YOUR CHAT LOG HERE
+`````
