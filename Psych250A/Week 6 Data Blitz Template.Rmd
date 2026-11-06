@@ -1,0 +1,310 @@
+---
+title: "Week 6 Data Blitz. Paired-Samples t-Test"
+author: "Gareth Yu and Seongmin Park"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
+    theme: cosmo
+    highlight: haddock
+editor_options:
+  chunk_output_type: console
+knit: (function(input, ...) rmarkdown::render(input, output_file = xfun::with_ext(basename(input), "html"), output_dir = dirname(input)))
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  error = TRUE,
+  comment = "",
+  fig.width = 8,
+  fig.height = 5)
+
+options(scipen = 999, width = 80)
+```
+
+# 1. Research Question
+
+Does the mean of a immediate recall differ from the mean of a delayed recall? We believe that delayed recall will have a lower mean compared to the mean of immediate recall because participants will forget information after the time goes by. Even though, a two tailed test is defensible because we don't know the true direction of the effect.
+
+# 2. Packages, Data Import, and Summaries
+
+Your code:
+
+```{r}
+library(ggplot2)
+library(summarytools)
+library(psych)
+
+filepath <- "https://raw.githubusercontent.com/craigenders/psych250a/main/data/VideoSpeed.csv"
+
+blitz <- read.csv(filepath, stringsAsFactors = TRUE)
+dfSummary(blitz)
+describe(blitz)
+```
+
+# 3. Descriptive Statistics
+
+The mean immediate recall is 60.13 and the mean delayed recall is 52.90. The direction of the difference is consistent with our prediction from Task 1, where the difference of the mean is approximately 7.23. Considering the standard deviation and range, the magnitude of the change is not significant because it is smaller than one standard deviation, indicating that the t-test will be consistent with the null hypothesis of no difference.
+
+# 4. Paired-Samples *t*-Test
+
+Your code:
+
+```{r}
+results <- t.test(blitz$DelayedRecall, blitz$ImmediateRecall, paired = TRUE)
+print(results)
+```
+
+# 5. Assumptions of the Paired-Samples *t*-Test
+
+AI's response:
+
+```         
+A paired-samples t-test evaluates whether the mean of the paired differences is zero. Importantly, its assumptions apply to the difference scores (DelayedRecall - ImmediateRecall), not to the two variables separately.
+
+Assumptions and consequences of violations
+
+Paired observations
+
+Each DelayedRecall value must correspond to the correct ImmediateRecall value from the same participant or unit.
+Consequence of violation: If observations are mismatched, the analysis no longer reflects within-subject change and the estimated effect and standard error can be seriously distorted.
+
+Independence of pairs
+
+Each participant's difference score should be independent of every other participant's difference score.
+Consequence of violation: Standard errors are typically incorrect, which can inflate or deflate Type I error rates and make confidence intervals unreliable.
+This assumption is usually evaluated from study design rather than the data.
+
+Continuous (interval/ratio) outcome
+
+The difference scores should be measured on a reasonably continuous scale.
+Consequence of violation: With coarse ordinal scales, the mean difference and t-test may be less appropriate; a nonparametric alternative such as the Wilcoxon signed-rank test may be preferable.
+
+Approximately normal distribution of the difference scores
+
+The distribution of DelayedRecall - ImmediateRecall should be approximately normal, especially in small samples.
+Consequence of violation:
+Mild departures are usually not problematic, particularly for moderate to large samples.
+Strong skewness, heavy tails, or extreme outliers can affect p-values, confidence intervals, and power.
+
+No influential outliers in the difference scores
+
+Outliers should not exert undue influence on the mean difference.
+Consequence of violation: Because the t-test is based on means, a few extreme differences can substantially alter the estimated effect and statistical conclusion.
+
+The assumptions that can be reasonably checked with the available data are the distribution of the difference scores and the presence of outliers. Independence and correct pairing are primarily design-based assumptions.
+
+# Load ggplot2
+library(ggplot2)
+
+# Create paired difference scores
+blitz$diff <- blitz$DelayedRecall - blitz$ImmediateRecall
+
+# Display basic numerical summary of the differences
+summary(blitz$diff)
+
+# Plot a histogram of difference scores to assess shape, skewness, and potential outliers
+ggplot(blitz, aes(x = diff)) +
+  geom_histogram(bins = 30, color = "black", fill = "lightblue") +
+  labs(
+    title = "Histogram of Difference Scores",
+    x = "DelayedRecall - ImmediateRecall",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# Plot a Q-Q plot of difference scores to assess approximate normality
+ggplot(blitz, aes(sample = diff)) +
+  stat_qq() +
+  stat_qq_line(color = "red") +
+  labs(
+    title = "Q-Q Plot of Difference Scores"
+  ) +
+  theme_minimal()
+
+# Plot a boxplot of difference scores to identify potential outliers
+ggplot(blitz, aes(y = diff)) +
+  geom_boxplot(fill = "lightgreen") +
+  labs(
+    title = "Boxplot of Difference Scores",
+    y = "DelayedRecall - ImmediateRecall"
+  ) +
+  theme_minimal()
+
+# Plot paired observations to check for unusual cases and visualize within-subject changes
+matplot(
+  t(as.matrix(blitz[, c("ImmediateRecall", "DelayedRecall")])),
+  type = "l",
+  lty = 1,
+  col = rgb(0, 0, 0, 0.3),
+  xaxt = "n",
+  xlab = "",
+  ylab = "Recall Score",
+  main = "Paired Profiles"
+)
+axis(1, at = c(1, 2), labels = c("ImmediateRecall", "DelayedRecall"))
+
+
+These plots collectively assess the key data-based assumptions: the histogram and Q-Q plot evaluate the normality of the difference scores, while the boxplot and paired-profile plot help identify influential outliers or unusual observations.
+```
+
+AI's code:
+
+```{r}
+# Load ggplot2
+library(ggplot2)
+
+# Create paired difference scores
+blitz$diff <- blitz$DelayedRecall - blitz$ImmediateRecall
+
+# Display basic numerical summary of the differences
+summary(blitz$diff)
+
+# Plot a histogram of difference scores to assess shape, skewness, and potential outliers
+ggplot(blitz, aes(x = diff)) +
+  geom_histogram(bins = 30, color = "black", fill = "lightblue") +
+  labs(
+    title = "Histogram of Difference Scores",
+    x = "DelayedRecall - ImmediateRecall",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# Plot a Q-Q plot of difference scores to assess approximate normality
+ggplot(blitz, aes(sample = diff)) +
+  stat_qq() +
+  stat_qq_line(color = "red") +
+  labs(
+    title = "Q-Q Plot of Difference Scores"
+  ) +
+  theme_minimal()
+
+# Plot a boxplot of difference scores to identify potential outliers
+ggplot(blitz, aes(y = diff)) +
+  geom_boxplot(fill = "lightgreen") +
+  labs(
+    title = "Boxplot of Difference Scores",
+    y = "DelayedRecall - ImmediateRecall"
+  ) +
+  theme_minimal()
+
+# Plot paired observations to check for unusual cases and visualize within-subject changes
+matplot(
+  t(as.matrix(blitz[, c("ImmediateRecall", "DelayedRecall")])),
+  type = "l",
+  lty = 1,
+  col = rgb(0, 0, 0, 0.3),
+  xaxt = "n",
+  xlab = "",
+  ylab = "Recall Score",
+  main = "Paired Profiles"
+)
+axis(1, at = c(1, 2), labels = c("ImmediateRecall", "DelayedRecall"))
+```
+
+Discrepancies between AI's code comments and its explanation of the assumptions:
+
+Comparing to the AI's code comments, we didn't figure out any discrepancies between AI's explanation of the assumption of a paired t-test.
+
+Your judgment about each assumption and whether any violations threaten the validity of your results:
+
+1.  Paired observations: Based on the data description, we assume that the observations are completely paired.
+2.  Independence of pairs: Similarly, we assume that the participants are independent.
+3.  Continuous outcome: the unit of immediate recall and delayed recall is numeric, which is continuous.
+4.  Normal distribution: According to the histogram, the plot exhibits an approximately normal distribution.
+5.  Outliers: Based on the Q-Q plot and the boxplot, there are only few of outliers which do not seem very influential for our analysis.
+
+# 6. Standard Error
+
+Your code:
+
+```{r}
+results$stderr
+```
+
+Your explanation of the standard error:
+
+The standard error of the mean difference between immediate recall and delayed recall quantifies the expected variability or sampling error of sample mean differences from the true population mean difference. To compute the t-statistics, the standard error standardizes the metric of the distance from the null. The standard error of the mean difference of '0.87' means that in repeated paired samples of 172 participants from this population, the mean difference between Immediate Recall and delayed recall typically deviate from the population mean difference by about '0.87' points due to random sampling.
+
+# 7. Interpretation of the Confidence Interval
+
+The lower and upper limits of a confidence interval represent the lowest and highest true population mean that could have reasonably produced the data. A 95% confidence interval [-8.958144, -5.506972] indicates that the lowest true population mean difference that could have reasonably generated our data is -8.958144, and the highest true population mean difference that could have reasonably generated our data is -5.506972.
+
+# 8. Evaluation of the Null Hypothesis
+
+Based on the 95% confidence interval, it seems not plausible that these data originated from a population in which the mean difference is 0. Because the interval does not contain the value of 0, and our conclusion agrees with the *p*-value, where the value is 3.539e-14.
+
+# 9. The *p*-Value as a Conditional Probability
+
+AI's response:
+
+```         
+A p-value is a conditional probability because it is calculated under a condition, namely that the null hypothesis is true.
+
+For a paired-samples t-test, the null hypothesis states that the population mean difference between the paired measurements is zero. The p-value answers the following question:
+
+If there really were no average difference between Delayed Recall and Immediate Recall in the population, how surprising would the observed sample result be?
+
+More specifically, the p-value is the probability of obtaining a test statistic as extreme as, or more extreme than, the one observed, conditional on the assumption that the null hypothesis is true.
+
+The key point is that the p-value is not:
+
+The probability that the null hypothesis is true.
+The probability that the alternative hypothesis is true.
+The probability that the observed result occurred "by chance."
+
+Instead, it is a statement about the data assuming the null hypothesis is correct.
+
+For example, if the p-value is .03, this means:
+
+Assuming there is truly no mean difference in the population, results at least as extreme as the one obtained would occur about 3% of the time because of random sampling variation.
+
+The word conditional is important because the probability is conditioned on a specific assumption: the null hypothesis is true. If that assumption changes, the probability changes as well.
+
+A useful analogy is a smoke alarm. Hearing the alarm is more likely if there is a fire than if there is not. The p-value is analogous to asking:
+
+"If there is no fire, how likely is it that the alarm would sound this strongly anyway?"
+
+It is not asking:
+
+"Given that the alarm sounded, what is the probability there is no fire?"
+
+Similarly, a p-value tells us how unusual the data would be if the null hypothesis were true, not how likely the null hypothesis is after seeing the data.
+```
+
+Your interpretation of the *p*-value:
+
+The p-value is conditional on the population mean difference being 0. The p-value is a probability that a population with the mean difference of 0 generating our sample or something more extreme. From our result, the p-value is .001, indicating that there is a less than 1 out of 1,000 chance to be generated from the population with the mean difference of 0.
+
+# 10. Explanation of the *t* Statistic
+
+A t-statistic quantifies the number of standard error units that separate the sample mean and null hypothesis population mean, which is 0. From our result, the t-statistic value of -8.2735 indicates that our mean difference is deviated from 0 with -8.2735 standard error units. Because we listed a delayed recall first, the minus sign of t-statistic implies that there is a decrease in recall from immediate to delayed. If we reverse the listed order, than the sign would change, but the magnitude remains the same.
+
+# 11. Effect Size
+
+Your code:
+
+```{r}
+blitz$RecallCha <- blitz$DelayedRecall - blitz$ImmediateRecall
+
+mean(blitz$RecallCha) / sd(blitz$RecallCha)
+```
+
+# 12. Interpretation of the Effect Size
+
+An effect size is the number of the standard deviation units that the means differ by. The size of -0.6308466 is the moderate effect based on Cohen's “off-the-shelf” benchmarks.
+
+# 13. Comparison of the *p*-Value and the Effect Size
+
+Both of the two statistics agree: the p-value is less than .001, and the effect size is moderate. Meanwhile, a small p-value does not effect to the small effect size because the standard error would decrease when the sample size increase, which does not impact on the value of the effect size.
+
+# 14. Reflection on AI
+
+The AI is useful for evaluating the assumptions and consequences of violations while running the paired t-test.
